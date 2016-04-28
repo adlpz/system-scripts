@@ -31,5 +31,17 @@ case $1 in
         ;;
     status)
         echo $(r $STATUS)
-      ;;
+        ;;
+    annotate)
+        TIMESTAMP=$(date +"%s")
+        STATUS=$($0 status)
+        CHARGE=$($0 charge)
+        CURRENT=$($0 current)
+        VOLTAGE=$($0 voltage)
+
+        echo $TIMESTAMP,$STATUS,$CHARGE,$CURRENT,$VOLTAGE
+        ;;
+    *)
+        echo "USAGE: $0 (power|charge|current|voltage|status|annotate FILE)"
+        ;;
 esac
