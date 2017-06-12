@@ -7,10 +7,13 @@ def run_command(command):
     cmd = Popen(command, stdout=PIPE, shell=True)
     return cmd.communicate()[0].decode("utf-8").strip()
 
-languages = ['us', 'es']
+languages = ['us/altgr-intl', 'es']
 scripts = ['~/scripts/keymods.sh']
 
 current_map = run_command("/usr/bin/setxkbmap -query | grep layout | cut -d: -f2")
+current_variant = run_command("/usr/bin/setxkbmap -query | grep variant | cut -d: -f2")
+if (current_variant):
+    current_map = current_map + "/" + current_variant;
 
 try:
     current_index = languages.index(current_map)
@@ -19,8 +22,12 @@ except ValueError:
 
 def next():
     next_map = languages[(current_index + 1) % len(languages)]
+    keymap, *keyvariant = next_map.split("/")
+    if not keyvariant:
+        run_command("/usr/bin/setxkbmap " + next_map)
+    else:
+        run_command("/usr/bin/setxkbmap -layout " + keymap + " -variant " + keyvariant[0])
 
-    run_command("/usr/bin/setxkbmap " + next_map)
     for script in scripts:
         run_command(script)
 
