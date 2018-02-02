@@ -5,14 +5,13 @@ SERVER="ch-s010.rsync.net"
 DIRECTORY="xps13"
 HOME="/home/user"
 
-DIRS="$HOME/Writing
-$HOME/Projects
+DIRS="$HOME/writing
+$HOME/projects
 $HOME/resources
 $HOME/random
 $HOME/Public
 $HOME/Mail
 $HOME/pdfs
-$HOME/work
 $HOME/docs
 $HOME/keys
 $HOME/websites
@@ -23,8 +22,8 @@ $HOME/text
 $HOME/images
 $HOME/scripts"
 
-EXCLUDE="$HOME/Projects/ABANDONED
-$HOME/Projects/ARCHIVED
+EXCLUDE="$HOME/projects/ABANDONED
+$HOME/projects/ARCHIVED
 $HOME/work/ARCHIVED"
 
 EXCLUDEFILE=$(mktemp)
@@ -40,7 +39,7 @@ while read -r includePath; do
     DIRS_ARG="$DIRS_ARG $includePath"
 done <<< "$DIRS"
 
-COMMAND="borg create --exclude-from $EXCLUDEFILE -p $USER@$SERVER:$DIRECTORY::$DATE $DIRS_ARG"
+COMMAND="borg --remote-path=borg1 create --exclude-from $EXCLUDEFILE -p $USER@$SERVER:$DIRECTORY::$DATE $DIRS_ARG"
 
 echo "Total size of backup directory..."
 TOTAL_SIZE=$(du -sb $DIRS_ARG | cut -f1 | awk '{s+=$1} END {print s}')
